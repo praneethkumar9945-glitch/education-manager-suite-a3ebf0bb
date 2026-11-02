@@ -1,0 +1,150 @@
+import type {
+  DigitalActivity,
+  WorkflowCampaign,
+  WorkflowContent,
+  WorkflowEvent,
+  WorkflowUpdate,
+} from '@/components/marketing-pr/types';
+
+export interface WorkflowState {
+  campaigns: WorkflowCampaign[];
+  content: WorkflowContent[];
+  digital: DigitalActivity[];
+  events: WorkflowEvent[];
+  updates: WorkflowUpdate[];
+}
+
+export const initialWorkflowState: WorkflowState = {
+  campaigns: [
+    {
+      id: 'WF-CMP-001',
+      name: 'BCA Admission 2027',
+      objective: 'Build awareness and generate qualified BCA applications for the 2027 intake.',
+      targetAudience: 'Class 12 students and parents',
+      startDate: '2026-09-01',
+      endDate: '2027-01-31',
+      status: 'Active',
+      createdBy: 'Marketing Head / PRO',
+      updatedBy: 'Marketing Head / PRO',
+      updatedAt: '2026-09-22 10:00',
+    },
+    {
+      id: 'WF-CMP-002',
+      name: 'Campus Open Day 2026',
+      objective: 'Increase campus visits and event registrations from prospective students.',
+      targetAudience: 'Prospective students and parents',
+      startDate: '2026-09-10',
+      endDate: '2026-10-15',
+      status: 'Planning',
+      createdBy: 'Marketing Head / PRO',
+      updatedBy: 'Marketing Head / PRO',
+      updatedAt: '2026-09-20 14:30',
+    },
+  ],
+  content: [
+    {
+      id: 'WF-CON-001',
+      campaignId: 'WF-CMP-001',
+      title: 'BCA Admission Brochure',
+      type: 'Brochure',
+      description: 'Program overview, curriculum, career outcomes, and application details.',
+      status: 'Approved',
+      createdBy: 'Content / Brand Team',
+      updatedBy: 'Marketing Head / PRO',
+      updatedAt: '2026-09-18 16:20',
+    },
+    {
+      id: 'WF-CON-002',
+      campaignId: 'WF-CMP-001',
+      title: 'BCA Admission Poster',
+      type: 'Poster',
+      description: 'Admission poster for digital and event promotion.',
+      status: 'Under Review',
+      createdBy: 'Content / Brand Team',
+      updatedBy: 'Content / Brand Team',
+      updatedAt: '2026-09-22 11:15',
+    },
+    {
+      id: 'WF-CON-003',
+      campaignId: 'WF-CMP-002',
+      title: 'Open Day Event Poster',
+      type: 'Poster',
+      description: 'Promotional poster with date, venue, agenda, and registration call to action.',
+      status: 'Changes Requested',
+      createdBy: 'Content / Brand Team',
+      updatedBy: 'Marketing Head / PRO',
+      updatedAt: '2026-09-21 09:40',
+    },
+  ],
+  digital: [
+    {
+      id: 'WF-DIG-001',
+      campaignId: 'WF-CMP-001',
+      name: 'BCA website and social promotion',
+      platform: 'Social Media',
+      contentIds: ['WF-CON-001'],
+      status: 'In Progress',
+      updatedBy: 'Digital Marketing Executive',
+      updatedAt: '2026-09-23 12:10',
+      performance: {
+        views: 15200,
+        reach: 12500,
+        likes: 920,
+        comments: 84,
+        shares: 136,
+        clicks: 430,
+        enquiries: 38,
+        date: '2026-09-23',
+      },
+    },
+  ],
+  events: [
+    {
+      id: 'WF-EVT-001',
+      campaignId: 'WF-CMP-001',
+      name: 'BCA Open Day',
+      type: 'Open Day',
+      date: '2026-10-05',
+      time: '10:00',
+      location: 'Main Campus',
+      targetAudience: 'BCA applicants and parents',
+      description: 'Campus tour, lab visit, faculty interaction, and admissions desk.',
+      organizer: 'Events & Outreach Coordinator',
+      expectedParticipants: 250,
+      registrationCount: 86,
+      attendanceCount: 0,
+      enquiries: 12,
+      feedback: '',
+      status: 'In Progress',
+      contentIds: ['WF-CON-001'],
+      updatedBy: 'Events & Outreach Coordinator',
+      updatedAt: '2026-09-23 15:45',
+    },
+  ],
+  updates: [
+    {
+      id: 'WF-UPD-001',
+      message: 'Digital marketing performance updated.',
+      actor: 'Digital Marketing Executive',
+      role: 'digital',
+      date: '2026-09-23 12:10',
+      campaignId: 'WF-CMP-001',
+    },
+    {
+      id: 'WF-UPD-002',
+      message: 'Event registration count updated.',
+      actor: 'Events & Outreach Coordinator',
+      role: 'events',
+      date: '2026-09-23 15:45',
+      campaignId: 'WF-CMP-001',
+    },
+    {
+      id: 'WF-UPD-003',
+      message: 'New content submitted for review.',
+      actor: 'Content / Brand Team',
+      role: 'content',
+      date: '2026-09-22 11:15',
+      campaignId: 'WF-CMP-001',
+    },
+  ],
+};
