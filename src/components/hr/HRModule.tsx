@@ -146,7 +146,7 @@ export function HRModule() {
             <div className="flex items-start justify-between">
               <p className="text-sm font-medium text-muted-foreground">{s.label}</p>
               <div className="grid size-10 place-items-center rounded-xl bg-accent text-accent-foreground">
-                {[UserRound, ClipboardList, Wallet, BadgeIndianRupee][i]!.className && <Icon i={i} />}
+                <Icon i={i} />
               </div>
             </div>
             <p className="mt-2 text-2xl font-extrabold tracking-tight">{s.value}</p>
