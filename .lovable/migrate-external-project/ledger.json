@@ -3,18 +3,96 @@
   "repo": "https://github.com/praneethkumar9945-glitch/education-manager-suite.git",
   "stack": "TanStack Start v1 (same as target template)",
   "capabilities": [
-    {"capability": "app code", "source": "github", "outcome": "migrate", "status": "pending", "next_action": "copy src app code, routes, styles into project"},
-    {"capability": "schema", "source": "github", "outcome": "absent", "status": "n/a", "next_action": "no database; app_state is a localStorage shim"},
-    {"capability": "records", "source": "github", "outcome": "absent", "status": "n/a", "next_action": "no record export exists; data is browser-local"},
-    {"capability": "auth", "source": "github", "outcome": "absent", "status": "n/a", "next_action": "no auth in source"},
-    {"capability": "authorization", "source": "github", "outcome": "absent", "status": "n/a", "next_action": "no role/permission logic in source"},
-    {"capability": "uploaded file bytes", "source": "github", "outcome": "absent", "status": "n/a", "next_action": "none"},
-    {"capability": "external providers", "source": "github", "outcome": "absent", "status": "n/a", "next_action": "none detected"},
-    {"capability": "public endpoints", "source": "github", "outcome": "absent", "status": "n/a", "next_action": "none detected"},
-    {"capability": "webhooks", "source": "github", "outcome": "absent", "status": "n/a", "next_action": "none detected"},
-    {"capability": "schedules", "source": "github", "outcome": "absent", "status": "n/a", "next_action": "none detected"},
-    {"capability": "secrets", "source": "github", "outcome": "absent", "status": "n/a", "next_action": "no env vars required"},
-    {"capability": "cutover", "source": "github", "outcome": "absent", "status": "n/a", "next_action": "not applicable"},
-    {"capability": "verification", "source": "github", "outcome": "verify", "status": "pending", "next_action": "build, typecheck, exercise a route and a CRUD state flow"}
+    {
+      "capability": "app code",
+      "source": "github",
+      "outcome": "migrate",
+      "status": "done",
+      "next_action": "none"
+    },
+    {
+      "capability": "schema",
+      "source": "github",
+      "outcome": "absent",
+      "status": "n/a",
+      "next_action": "no database; app_state is a localStorage shim"
+    },
+    {
+      "capability": "records",
+      "source": "github",
+      "outcome": "absent",
+      "status": "n/a",
+      "next_action": "no record export exists; data is browser-local"
+    },
+    {
+      "capability": "auth",
+      "source": "github",
+      "outcome": "absent",
+      "status": "n/a",
+      "next_action": "no auth in source"
+    },
+    {
+      "capability": "authorization",
+      "source": "github",
+      "outcome": "absent",
+      "status": "n/a",
+      "next_action": "no role/permission logic in source"
+    },
+    {
+      "capability": "uploaded file bytes",
+      "source": "github",
+      "outcome": "absent",
+      "status": "n/a",
+      "next_action": "none"
+    },
+    {
+      "capability": "external providers",
+      "source": "github",
+      "outcome": "absent",
+      "status": "n/a",
+      "next_action": "none detected"
+    },
+    {
+      "capability": "public endpoints",
+      "source": "github",
+      "outcome": "absent",
+      "status": "n/a",
+      "next_action": "none detected"
+    },
+    {
+      "capability": "webhooks",
+      "source": "github",
+      "outcome": "absent",
+      "status": "n/a",
+      "next_action": "none detected"
+    },
+    {
+      "capability": "schedules",
+      "source": "github",
+      "outcome": "absent",
+      "status": "n/a",
+      "next_action": "none detected"
+    },
+    {
+      "capability": "secrets",
+      "source": "github",
+      "outcome": "absent",
+      "status": "n/a",
+      "next_action": "no env vars required"
+    },
+    {
+      "capability": "cutover",
+      "source": "github",
+      "outcome": "absent",
+      "status": "n/a",
+      "next_action": "not applicable"
+    },
+    {
+      "capability": "verification",
+      "source": "github",
+      "outcome": "verify",
+      "status": "verified",
+      "next_action": "none"
+    }
   ]
 }
