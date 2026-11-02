@@ -16,7 +16,7 @@ import {
 
 const HEAD = 'Marketing Head / PRO';
 const DEFAULT_TEAM = TEAMS[0] as TaskTeam;
-const DEFAULT_CATEGORY = TEAM_CATEGORIES[DEFAULT_TEAM][0] as TaskCategory;
+const DEFAULT_CATEGORY = TEAM_CATEGORIES[DEFAULT_TEAM]?.[0] as TaskCategory;
 const teamMeta: { name: TaskTeam; icon: ReactNode; desc: string }[] = [
   { name: 'Digital Marketing Executive', icon: <Globe size={16} />, desc: 'Runs digital campaigns, website, SEO and social media.' },
   { name: 'Content & Brand Team', icon: <Palette size={16} />, desc: 'Creates prospectus, brochures, newsletters and official college content.' },
