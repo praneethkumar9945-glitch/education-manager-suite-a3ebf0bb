@@ -15,6 +15,8 @@ import {
 } from 'lucide-react';
 
 const HEAD = 'Marketing Head / PRO';
+const DEFAULT_TEAM = TEAMS[0] as TaskTeam;
+const DEFAULT_CATEGORY = TEAM_CATEGORIES[DEFAULT_TEAM][0] as TaskCategory;
 const teamMeta: { name: TaskTeam; icon: ReactNode; desc: string }[] = [
   { name: 'Digital Marketing Executive', icon: <Globe size={16} />, desc: 'Runs digital campaigns, website, SEO and social media.' },
   { name: 'Content & Brand Team', icon: <Palette size={16} />, desc: 'Creates prospectus, brochures, newsletters and official college content.' },
@@ -53,8 +55,8 @@ export function TeamCoordination({ tasks, setTasks, requests, setRequests, onNot
     : requests;
   const [requestForm, setRequestForm] = useState({
     title: '',
-    assignedTeam: TEAMS[0],
-    category: TEAM_CATEGORIES[TEAMS[0]][0],
+    assignedTeam: DEFAULT_TEAM,
+    category: DEFAULT_CATEGORY,
     description: '',
     priority: 'Medium' as Priority,
     dueDate: '',
@@ -146,7 +148,7 @@ export function TeamCoordination({ tasks, setTasks, requests, setRequests, onNot
     setTasks((previous) => [assignedTask, ...previous]);
     const recipientRole = TEAM_ROLE[newRequest.assignedTeam];
     if (recipientRole) onNotify?.({ title: 'New Task Assigned', message: `${newRequest.id}: ${newRequest.title}`, role: recipientRole });
-    setRequestForm({ title: '', assignedTeam: TEAMS[0], category: TEAM_CATEGORIES[TEAMS[0]][0], description: '', priority: 'Medium', dueDate: '' });
+    setRequestForm({ title: '', assignedTeam: DEFAULT_TEAM, category: DEFAULT_CATEGORY, description: '', priority: 'Medium', dueDate: '' });
     setShowCreateRequest(false);
   };
 
@@ -335,7 +337,7 @@ export function TeamCoordination({ tasks, setTasks, requests, setRequests, onNot
               <span className="block text-xs font-medium text-slate-500 mb-1">Select Team *</span>
               <select value={requestForm.assignedTeam} onChange={(event) => {
                 const assignedTeam = event.target.value;
-                setRequestForm({ ...requestForm, assignedTeam, category: TEAM_CATEGORIES[assignedTeam][0] });
+                setRequestForm({ ...requestForm, assignedTeam, category: TEAM_CATEGORIES[assignedTeam]?.[0] ?? requestForm.category });
               }} className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400">
                 {TEAMS.map((team) => <option key={team} value={team}>{team}</option>)}
               </select>

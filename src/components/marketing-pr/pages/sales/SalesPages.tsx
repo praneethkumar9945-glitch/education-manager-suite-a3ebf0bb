@@ -760,7 +760,7 @@ export function ConversionTracking() {
         <CardBody>
           <div className="space-y-3">
             {stageCounts.map((s, i) => {
-              const prevCount = i === 0 ? totalLeads : stageCounts[i - 1].count;
+              const prevCount = i === 0 ? totalLeads : stageCounts[i - 1]?.count ?? totalLeads;
               const rate = prevCount > 0 ? ((s.count / prevCount) * 100).toFixed(0) : '0';
               return (
                 <div key={s.label}>
@@ -827,7 +827,7 @@ export function SalesReports() {
               data={leadSources.map((src, i) => ({
                 label: src,
                 value: filtered.filter((s) => s.leadSource === src).length,
-                color: ['bg-blue-500', 'bg-emerald-500', 'bg-amber-500', 'bg-violet-500', 'bg-cyan-500'][i],
+                color: ['bg-blue-500', 'bg-emerald-500', 'bg-amber-500', 'bg-violet-500', 'bg-cyan-500'][i] ?? 'bg-slate-400',
               }))}
               centerValue={stats.received}
               centerLabel="Total"
@@ -840,9 +840,9 @@ export function SalesReports() {
           <CardBody>
             <BarChart
               data={courses.map((c, i) => ({
-                label: c.split(' ')[0],
+                label: c.split(' ')[0] ?? c,
                 value: filtered.filter((s) => s.courseInterest === c).length,
-                color: ['bg-blue-500', 'bg-emerald-500', 'bg-amber-500', 'bg-violet-500', 'bg-cyan-500'][i],
+                color: ['bg-blue-500', 'bg-emerald-500', 'bg-amber-500', 'bg-violet-500', 'bg-cyan-500'][i] ?? 'bg-slate-400',
               }))}
             />
           </CardBody>
