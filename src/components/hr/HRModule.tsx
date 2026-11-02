@@ -211,8 +211,8 @@ export function HRModule() {
             <table className="w-full min-w-[760px]">
               <thead className="border-b bg-accent/40">
                 <tr>
-                  {[["Request", ClipboardList], ["Type", FileText], ["Dates", CalendarDays], ["Details", FileText], ["Status", null], ["Action", null]].map(([l, I]) => (
-                    <th key={l as string} className={cn(th, "gap-1.5")}>{l}</th>
+                  {["Request", "Type", "Dates", "Details", "Status", "Action"].map((l) => (
+                    <th key={l} className={th}>{l}</th>
                   ))}
                 </tr>
               </thead>
