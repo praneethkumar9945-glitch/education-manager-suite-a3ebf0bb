@@ -199,11 +199,17 @@ export function FeeConcessionForm() {
 
           <Section title="03 · Office Review & Approval">
             <div className="grid gap-3 sm:grid-cols-3">
-              {APPROVERS.map((a) => (
-                <ApproverBox key={a.key} title={a.title} sig={null} onSign={() => {}} />
+              {["SALES HEAD", "MANAGER", "DIRECTOR & CEO"].map((t) => (
+                <div key={t} className="rounded-xl border border-dashed border-border bg-background/50 px-4 py-6 text-center">
+                  <p className="text-xs font-bold uppercase tracking-wide text-skill-accent">{t}</p>
+                  <p className="mt-3 h-10" />
+                  <p className="text-xs text-muted-foreground">Signature on record</p>
+                </div>
               ))}
             </div>
-            <p className="mt-4 text-center text-[11px] italic text-muted-foreground">CONFIDENTIAL • For Internal Administrative Use Only</p>
+            <p className="mt-4 text-center text-[11px] italic text-muted-foreground">
+              Sign saved concessions from the list below — approval needs Sales Head, Manager and Director &amp; CEO.
+            </p>
           </Section>
 
           <div className="flex flex-wrap items-center gap-2">
