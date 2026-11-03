@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { FileSignature, Plus, Printer, Save, CheckCircle2, GraduationCap } from "lucide-react";
+import { Plus, Printer, Save, GraduationCap } from "lucide-react";
 import { useCloudState } from "@/lib/cloud-state";
 import { cn } from "@/lib/utils";
 
@@ -76,27 +76,7 @@ const APPROVERS = [
   { key: "director", title: "DIRECTOR & CEO" },
 ] as const;
 
-function ApproverBox({ title, sig, onSign }: { title: string; sig: Signature | null; onSign: () => void }) {
-  return (
-    <div className="flex flex-col items-center gap-2 rounded-xl border border-dashed border-border bg-background/50 px-4 py-5 text-center">
-      <p className="text-xs font-bold uppercase tracking-wide text-skill-accent">{title}</p>
-      {sig ? (
-        <div className="mt-2">
-          <CheckCircle2 className="mx-auto size-6 text-success" />
-          <p className="mt-1 text-sm font-semibold">{sig.name}</p>
-          <p className="text-[11px] text-muted-foreground">Signed {sig.at}</p>
-        </div>
-      ) : (
-        <>
-          <div className="mt-2 h-12" />
-          <button onClick={onSign} className="flex items-center gap-1.5 rounded-lg bg-skill-accent/10 px-3 py-1.5 text-xs font-semibold text-skill-accent hover:bg-skill-accent/20">
-            <FileSignature className="size-3.5" />Signature
-          </button>
-        </>
-      )}
-    </div>
-  );
-}
+const label = "text-xs font-semibold text-foreground";
 
 export function FeeConcessionForm() {
   const [records, setRecords] = useCloudState<ConcessionRecord[]>("admission.fee-concessions", []);
@@ -175,7 +155,7 @@ export function FeeConcessionForm() {
                   {(["Percentage", "Fixed Amount", "Special Case"] as const).map((t) => (
                     <button key={t} onClick={() => set("type", t)}
                       className={cn("rounded-full px-3.5 py-1.5 text-xs font-semibold transition",
-                        form.type === t ? "bg-skill-accent text-white shadow-glow" : "border bg-background text-muted-foreground hover:bg-accent")}>
+                        form.type === t ? "bg-skill-accent text-primary-foreground shadow-glow" : "border bg-background text-muted-foreground hover:bg-accent")}>
                       {t}
                     </button>
                   ))}
