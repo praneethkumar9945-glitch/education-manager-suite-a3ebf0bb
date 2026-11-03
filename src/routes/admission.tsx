@@ -30,6 +30,7 @@ const TABS: {
     | "/admission/applications"
     | "/admission/finance"
     | "/admission/form-builder"
+    | "/admission/fee-concession"
     | "/admission/call-center";
   label: string;
   exact?: boolean;
@@ -41,6 +42,7 @@ const TABS: {
   { to: "/admission/applications", label: "Skill AI Admissions" },
   { to: "/admission/finance", label: "Finance Desk" },
   { to: "/admission/form-builder", label: "Form Builder" },
+  { to: "/admission/fee-concession", label: "Fee Concession" },
 ];
 
 function AdmissionLayout() {

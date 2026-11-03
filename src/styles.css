@@ -51,6 +51,7 @@
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
+  --color-skill-accent: var(--skill-accent);
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);
@@ -67,6 +68,7 @@
 
 :root {
   --radius: 0.625rem;
+  --skill-accent: oklch(0.705 0.176 45.7);
   --background: oklch(0.985 0.005 250);
   --foreground: oklch(0.25 0.03 260);
   --card: oklch(1 0 0);
