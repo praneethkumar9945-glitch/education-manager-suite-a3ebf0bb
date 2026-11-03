@@ -31,9 +31,7 @@ const money = (n: number) => `₹${n.toLocaleString("en-IN")}`;
 const today = () => new Date().toISOString().slice(0, 10);
 const nowStamp = () => new Date().toISOString().replace("T", " ").slice(0, 16);
 
-const label = "text-xs font-semibold text-foreground";
-const input = "mt-1 h-9 w-full rounded-lg border bg-background px-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/10";
-const sectionTitle = "flex items-center gap-2 text-sm font-bold uppercase tracking-wide text-skill-accent";
+function Field({ label: l, children, className }: { label: string; children: React.ReactNode; className?: string }) {
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
