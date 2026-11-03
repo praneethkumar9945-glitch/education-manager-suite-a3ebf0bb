@@ -4,6 +4,7 @@ import { useCloudState } from "@/lib/cloud-state";
 import { cn } from "@/lib/utils";
 
 type ConcessionType = "Percentage" | "Fixed Amount" | "Special Case";
+type ApproverKey = "salesHead" | "manager" | "director";
 interface Signature { name: string; at: string }
 interface ConcessionRecord {
   id: string;
@@ -31,29 +32,52 @@ const money = (n: number) => `₹${n.toLocaleString("en-IN")}`;
 const today = () => new Date().toISOString().slice(0, 10);
 const nowStamp = () => new Date().toISOString().replace("T", " ").slice(0, 16);
 
-function Field({ label: l, children, className }: { label: string; children: React.ReactNode; className?: string }) {
+const inputCls = "mt-1 h-9 w-full rounded-lg border bg-background px-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/10";
+
+const APPROVERS: { key: ApproverKey; title: string; short: string }[] = [
+  { key: "salesHead", title: "Sales Head", short: "SH" },
+  { key: "manager", title: "Manager", short: "M" },
+  { key: "director", title: "Director & CEO", short: "CEO" },
+];
+
+function Field({ label, children, className }: { label: string; children: React.ReactNode; className?: string }) {
+  return (
+    <div className={className}>
+      <p className="text-xs font-semibold text-foreground">{label}</p>
+      {children}
+    </div>
+  );
+}
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="rounded-2xl border border-border bg-card shadow-card">
-      <div className="flex items-center justify-between border-b border-border px-5 py-3">
-        <p className={sectionTitle}>{title}</p>
+      <div className="border-b border-border px-5 py-3">
+        <p className="text-sm font-bold uppercase tracking-wide text-skill-accent">{title}</p>
       </div>
       <div className="p-5">{children}</div>
     </div>
   );
 }
 
-function Field({ label: l, children, className }: { label: string; children: React.ReactNode; className?: string }) {
-  return (
-    <div className={className}>
-      <p className={label}>{l}</p>
-      {children}
-    </div>
-  );
+interface FormState {
+  date: string;
+  studentName: string;
+  branch: string;
+  applicationNo: string;
+  contact: string;
+  course: string;
+  duration: string;
+  startingDate: string;
+  totalFees: number;
+  amountPaid: number;
+  type: ConcessionType;
+  discount: number;
+  reason: string;
+  studentSign: string;
 }
 
-function emptyForm(): Omit<ConcessionRecord, "id" | "netPayable" | "salesHead" | "manager" | "director"> {
+function emptyForm(): FormState {
   return {
     date: today(), studentName: "", branch: "", applicationNo: "", contact: "",
     course: "", duration: "", startingDate: "", totalFees: 0, amountPaid: 0,
@@ -68,39 +92,31 @@ function computeNet(total: number, type: ConcessionType, discount: number): numb
   return total;
 }
 
-const APPROVERS = [
-  { key: "salesHead", title: "SALES HEAD" },
-  { key: "manager", title: "MANAGER" },
-  { key: "director", title: "DIRECTOR & CEO" },
-] as const;
-
-const label = "text-xs font-semibold text-foreground";
-
 export function FeeConcessionForm() {
   const [records, setRecords] = useCloudState<ConcessionRecord[]>("admission.fee-concessions", []);
-  const [form, setForm] = useState(emptyForm);
-  const set = <K extends keyof typeof form>(k: K, v: (typeof form)[K]) => setForm((f) => ({ ...f, [k]: v }));
+  const [form, setForm] = useState<FormState>(emptyForm);
+  const set = <K extends keyof FormState>(k: K, v: FormState[K]) => setForm((f) => ({ ...f, [k]: v }));
 
   const net = useMemo(() => computeNet(form.totalFees, form.type, form.discount), [form.totalFees, form.type, form.discount]);
-  const nextId = () => `FC-${String(records.length + 1).padStart(4, "0")}`;
-
-  const canSave = form.studentName.trim() && form.course.trim() && form.reason.trim();
+  const nextId = `FC-${String(records.length + 1).padStart(4, "0")}`;
+  const canSave = Boolean(form.studentName.trim() && form.course.trim() && form.reason.trim());
 
   const save = () => {
     if (!canSave) return;
     setRecords((prev) => [...prev, {
-      ...form, id: nextId(), totalFees: form.totalFees || 0, amountPaid: form.amountPaid || 0,
-      discount: form.discount || 0, netPayable: net, salesHead: null, manager: null, director: null,
+      ...form, id: nextId, netPayable: net,
+      salesHead: null, manager: null, director: null,
     }]);
     setForm(emptyForm());
   };
 
-  const sign = (id: string, key: "salesHead" | "manager" | "director") =>
+  const sign = (id: string, key: ApproverKey) =>
     setRecords((prev) => prev.map((r) => (r.id === id
       ? { ...r, [key]: { name: "Praneeth", at: nowStamp() } } : r)));
 
   const loadForEdit = (r: ConcessionRecord) => {
-    setForm({ ...r });
+    const { id: _id, netPayable: _net, salesHead: _s, manager: _m, director: _d, ...rest } = r;
+    setForm(rest);
     setRecords((prev) => prev.filter((x) => x.id !== r.id));
   };
 
@@ -117,7 +133,7 @@ export function FeeConcessionForm() {
           <div className="mt-4 grid gap-3 text-left sm:grid-cols-2">
             <div className="rounded-lg bg-accent/60 px-4 py-2.5">
               <p className="text-xs font-bold uppercase tracking-wide text-skill-accent">Concession No.</p>
-              <p className="text-sm font-semibold">{nextId()}</p>
+              <p className="text-sm font-semibold">{nextId}</p>
             </div>
             <div className="rounded-lg bg-accent/60 px-4 py-2.5">
               <p className="text-xs font-bold uppercase tracking-wide text-skill-accent">Date</p>
@@ -129,19 +145,17 @@ export function FeeConcessionForm() {
         <div className="mt-5 space-y-4">
           <Section title="01 · Student & Course Details">
             <div className="grid gap-x-6 gap-y-3 sm:grid-cols-2">
-              <Field label="Student Name"><input value={form.studentName} onChange={(e) => set("studentName", e.target.value)} placeholder="Full name" className={input} /></Field>
-              <Field label="Branch / Centre Name"><input value={form.branch} onChange={(e) => set("branch", e.target.value)} placeholder="e.g. Kukatpally Centre" className={input} /></Field>
-              <Field label="Application No."><input value={form.applicationNo} onChange={(e) => set("applicationNo", e.target.value)} placeholder="APP-0000" className={input} /></Field>
-              <Field label="Requested Date"><input type="date" value={form.date} onChange={(e) => set("date", e.target.value)} className={input} /></Field>
-              <Field label="Student Contact No."><input value={form.contact} onChange={(e) => set("contact", e.target.value)} placeholder="+91 …" className={input} /></Field>
-              <Field label="Total Fees (Incl. GST)"><input type="number" min={0} value={form.totalFees || ""} onChange={(e) => set("totalFees", Number(e.target.value))} placeholder="0" className={input} /></Field>
-              <Field label="Course / Programme"><input value={form.course} onChange={(e) => set("course", e.target.value)} placeholder="e.g. Full-Stack Development" className={input} /></Field>
-              <Field label="Requested Discount"><input type="number" min={0} value={form.discount || ""} onChange={(e) => set("discount", Number(e.target.value))} placeholder="0" className={input} /></Field>
-              <Field label="Course Duration"><input value={form.duration} onChange={(e) => set("duration", e.target.value)} placeholder="e.g. 6 months" className={input} /></Field>
-              <Field label="Amount Already Paid"><input type="number" min={0} value={form.amountPaid || ""} onChange={(e) => set("amountPaid", Number(e.target.value))} placeholder="0" className={input} /></Field>
-              <Field label="Starting Date"><input type="date" value={form.startingDate} onChange={(e) => set("startingDate", e.target.value)} className={input} /></Field>
+              <Field label="Student Name"><input value={form.studentName} onChange={(e) => set("studentName", e.target.value)} placeholder="Full name" className={inputCls} /></Field>
+              <Field label="Branch / Centre Name"><input value={form.branch} onChange={(e) => set("branch", e.target.value)} placeholder="e.g. Kukatpally Centre" className={inputCls} /></Field>
+              <Field label="Application No."><input value={form.applicationNo} onChange={(e) => set("applicationNo", e.target.value)} placeholder="APP-0000" className={inputCls} /></Field>
+              <Field label="Requested Date"><input type="date" value={form.date} onChange={(e) => set("date", e.target.value)} className={inputCls} /></Field>
+              <Field label="Student Contact No."><input value={form.contact} onChange={(e) => set("contact", e.target.value)} placeholder="+91 …" className={inputCls} /></Field>
+              <Field label="Total Fees (Incl. GST)"><input type="number" min={0} value={form.totalFees || ""} onChange={(e) => set("totalFees", Number(e.target.value))} placeholder="0" className={inputCls} /></Field>
+              <Field label="Course / Programme"><input value={form.course} onChange={(e) => set("course", e.target.value)} placeholder="e.g. Full-Stack Development" className={inputCls} /></Field>
+              <Field label="Course Duration"><input value={form.duration} onChange={(e) => set("duration", e.target.value)} placeholder="e.g. 6 months" className={inputCls} /></Field>
+              <Field label="Starting Date"><input type="date" value={form.startingDate} onChange={(e) => set("startingDate", e.target.value)} className={inputCls} /></Field>
               <Field label="Net Payable After Discount">
-                <div className={cn(input, "flex items-center font-bold")}>{money(net)}</div>
+                <div className={cn(inputCls, "flex items-center font-bold")}>{money(net)}</div>
               </Field>
             </div>
           </Section>
@@ -159,41 +173,42 @@ export function FeeConcessionForm() {
                   ))}
                 </div>
               </Field>
-              <Field label="Requested Discount Value">
-                <input type="number" min={0} value={form.discount || ""} onChange={(e) => set("discount", Number(e.target.value))} placeholder={form.type === "Percentage" ? "e.g. 10 (%)" : "e.g. 5000 (₹)"} className={input} />
+              <Field label="Requested Discount">
+                <input type="number" min={0} value={form.discount || ""} onChange={(e) => set("discount", Number(e.target.value))} placeholder={form.type === "Percentage" ? "e.g. 10 (%)" : "e.g. 5000 (₹)"} className={inputCls} />
               </Field>
+              <Field label="Amount Already Paid"><input type="number" min={0} value={form.amountPaid || ""} onChange={(e) => set("amountPaid", Number(e.target.value))} placeholder="0" className={inputCls} /></Field>
             </div>
             <div className="mt-3">
-              <p className={label}>Reason for Discount / Supporting Details</p>
+              <p className="text-xs font-semibold text-foreground">Reason for Discount / Supporting Details</p>
               <textarea value={form.reason} onChange={(e) => set("reason", e.target.value)} rows={3} placeholder="Explain why the concession is being requested…" className="mt-1 w-full rounded-lg border bg-background px-3 py-2 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/10" />
             </div>
-            <div className="mt-4 grid gap-x-6 gap-y-3 border-t pt-4 sm:grid-cols-2">
-              <p className="text-xs text-muted-foreground sm:col-span-2">
+            <div className="mt-4 border-t pt-4">
+              <p className="text-xs text-muted-foreground">
                 <span className="font-semibold text-foreground">Student Declaration:</span> I request consideration of the above concession and confirm that the information provided is true and complete.
               </p>
-              <Field label="Student Signature (type full name)"><input value={form.studentSign} onChange={(e) => set("studentSign", e.target.value)} placeholder="Signature" className={input} /></Field>
+              <div className="mt-3 max-w-sm">
+                <Field label="Student Signature (type full name)"><input value={form.studentSign} onChange={(e) => set("studentSign", e.target.value)} placeholder="Signature" className={inputCls} /></Field>
+              </div>
             </div>
           </Section>
 
           <Section title="03 · Office Review & Approval">
             <div className="grid gap-3 sm:grid-cols-3">
-              {["SALES HEAD", "MANAGER", "DIRECTOR & CEO"].map((t) => (
-                <div key={t} className="rounded-xl border border-dashed border-border bg-background/50 px-4 py-6 text-center">
-                  <p className="text-xs font-bold uppercase tracking-wide text-skill-accent">{t}</p>
-                  <p className="mt-3 h-10" />
-                  <p className="text-xs text-muted-foreground">Signature on record</p>
+              {APPROVERS.map((a) => (
+                <div key={a.key} className="rounded-xl border border-dashed border-border bg-background/50 px-4 py-6 text-center">
+                  <p className="text-xs font-bold uppercase tracking-wide text-skill-accent">{a.title}</p>
+                  <div className="h-10" />
+                  <p className="text-xs text-muted-foreground">Sign from the saved list below</p>
                 </div>
               ))}
             </div>
-            <p className="mt-4 text-center text-[11px] italic text-muted-foreground">
-              Sign saved concessions from the list below — approval needs Sales Head, Manager and Director &amp; CEO.
-            </p>
+            <p className="mt-4 text-center text-[11px] italic text-muted-foreground">CONFIDENTIAL • For Internal Administrative Use Only</p>
           </Section>
 
           <div className="flex flex-wrap items-center gap-2">
             <button onClick={save} disabled={!canSave}
-              className={cn("flex items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-semibold shadow-glow transition",
-                canSave ? "bg-primary-gradient text-primary-foreground hover:opacity-95" : "cursor-not-allowed bg-muted text-muted-foreground shadow-none")}>
+              className={cn("flex items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-semibold transition",
+                canSave ? "bg-primary-gradient text-primary-foreground shadow-glow hover:opacity-95" : "cursor-not-allowed bg-muted text-muted-foreground")}>
               <Save className="size-4" />Save Concession
             </button>
             <button onClick={() => window.print()} className="flex items-center gap-1.5 rounded-lg border bg-card px-4 py-2 text-sm font-semibold hover:bg-accent">
@@ -236,15 +251,15 @@ export function FeeConcessionForm() {
                     </td>
                     <td className="px-4 py-3 text-sm">{r.course}</td>
                     <td className="px-4 py-3 text-sm">{r.type}</td>
-                    <td className="px-4 py-3 text-sm">{r.discount}{r.type === "Percentage" ? "%" : ""} · {money(r.discount)}</td>
+                    <td className="px-4 py-3 text-sm">{r.type === "Percentage" ? `${r.discount}%` : money(r.discount)}</td>
                     <td className="px-4 py-3 text-sm font-bold">{money(r.netPayable)}</td>
-                    <td className="px-4 py-3 text-sm">
+                    <td className="px-4 py-3">
                       <div className="flex gap-1">
                         {APPROVERS.map((a) => (
                           <button key={a.key} onClick={() => sign(r.id, a.key)} title={`Sign as ${a.title}`}
                             className={cn("size-6 rounded-full border text-[10px] font-bold transition",
                               r[a.key] ? "border-success bg-success/10 text-success" : "border-border text-muted-foreground hover:border-skill-accent hover:text-skill-accent")}>
-                            {a.key === "salesHead" ? "SH" : a.key === "manager" ? "M" : "CEO"}
+                            {a.short}
                           </button>
                         ))}
                       </div>
